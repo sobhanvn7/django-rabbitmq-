@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  project1:
+    build:
+      context: ./project1
+    container_name: project1
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./project1:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+
+  project2:
+    build:
+      context: ./project2
+    container_name: project2
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - ./project2:/code
+    ports:
+      - "8001:8001"
+    depends_on:
+      - rabbitmq
